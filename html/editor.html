@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Halaman Edit Template</title>
+  <link rel="stylesheet" href="../css/editor.css" />
+  <!-- link bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <style>
+    /* Styling dasar untuk tombol shape */
+    .shape-button {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      margin: 5px;
+      border: 2px solid #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: grab;
+      color: #fff;
+      position: relative;
+    }
+
+    /* Lingkaran */
+    .shape-circle {
+      background-color: red;
+      border-radius: 50%;
+    }
+
+    /* Persegi panjang */
+    .shape-rectangle {
+      background-color: blue;
+      width: 70px;
+      height: 40px;
+    }
+
+    /* Segitiga */
+    .shape-triangle {
+      background-color: transparent;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid green;
+    }
+
+    /* Segitiga sama sisi */
+    .shape-equilateral {
+      background-color: transparent;
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 50px solid pink;
+    }
+
+    /* Segitiga sama kaki */
+    .shape-isosceles {
+      background-color: transparent;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid yellow;
+    }
+
+    /* Segi enam */
+    .shape-hexagon {
+      background-color: cyan;
+      width: 50px;
+      height: 50px;
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
+
+    /* Segi lima */
+    .shape-pentagon {
+      background-color: magenta;
+      width: 50px;
+      height: 50px;
+      clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    }
+
+    /* Oval */
+    .shape-oval {
+      background-color: orange;
+      border-radius: 50%;
+      width: 70px;
+      height: 40px;
+    }
+
+
+    #additionalShapes {
+      display: none;
+      /* Hidden by default */
+    }
+
+    #showMoreShapes {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    /* Style untuk ukuran slider */
+    .size-slider {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    /* Style untuk dropdown ukuran latar belakang */
+    .aspect-ratio-dropdown {
+      width: 100%;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Edit Template</h1>
+  </header>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Pengaturan</h2>
+
+      <label for="backgroundColor">Warna Latar Belakang:</label>
+      <input type="color" id="backgroundColor" name="backgroundColor" />
+
+      <label for="elementColor">Warna Elemen:</label>
+      <input type="color" id="elementColor" name="elementColor" />
+
+      <!-- Dropdown untuk memilih rasio latar belakang -->
+      <label for="aspectRatio">Pilih Rasio Latar Belakang:</label>
+      <select id="aspectRatio" class="aspect-ratio-dropdown">
+        <option value="16:9">16:9</option>
+        <option value="9:16">9:16</option>
+        <option value="4:5">4:5</option>
+        <option value="1:1">1:1</option>
+        <option value="4:3">4:3</option>
+      </select>
+
+      <!-- tambahakan bagian aktifkan border -->
+      <label for="borderActive">Aktifkan Border:</label>
+      <input type="checkbox" id="borderActive" name="borderActive" />
+
+      <label for="borderColor">Warna Border:</label>
+      <input type="color" id="borderColor" name="borderColor" />
+
+      <label for="borderSize">Ukuran Border:</label>
+      <input type="range" id="borderSize" name="borderSize" min="0" max="10" value="0" class="size-slider" />
+      <span id="borderSizeValue">0</span> px
+
+      <!-- Input untuk mengatur transparansi -->
+      <label for="opacitySlider">Transparansi:</label>
+      <input type="range" id="opacitySlider" min="0" max="100" value="100" />
+      <span id="opacityValue">100</span>%
+
+
+      <!-- Input untuk menambahkan teks -->
+      <div class="controls">
+        <label for="textInput">Masukkan Teks:</label>
+        <input type="text" id="textInput" placeholder="Teks baru...">
+        <button id="addTextBtn">Tambah Teks</button>
+      </div>
+
+      <!-- Kontrol untuk mengedit teks -->
+      <div class="controls">
+        <label for="textColor">Warna Teks:</label>
+        <input type="color" id="textColor" value="#000000">
+
+        <label for="textSize">Ukuran Font:</label>
+        <input type="range" id="textSize" min="10" max="100" value="30">
+        <span id="textSizeValue">30</span> px
+      </div>
+
+
+      <label for="imageInput">Tambah Gambar:</label>
+      <input type="file" id="imageInput" accept="image/*" />
+      <button id="deleteImage">Hapus Gambar</button>
+
+      <div>
+        <label for="imageWidth">Lebar:</label>
+        <input type="range" id="imageWidth" name="imageWidth" min="10" max="800" value="100" />
+        <span id="imageWidthValue">100</span> px
+
+        <label for="imageHeight">Tinggi:</label>
+        <input type="range" id="imageHeight" name="imageHeight" min="10" max="800" value="100" />
+        <span id="imageHeightValue">100</span> px
+
+        <label for="shapeSize">Ukuran Shape:</label>
+        <input type="range" id="shapeSize" name="shapeSize" min="20" max="150" value="50" class="size-slider" />
+        <span id="sizeValue">50</span> px
+
+        <h3>Tambah Shape</h3>
+        <div id="shapeOptions">
+          <!-- Primary Shapes -->
+          <div class="shape-button shape-circle" data-shape="circle" draggable="true">C</div>
+          <div class="shape-button shape-rectangle" data-shape="rectangle" draggable="true">R</div>
+          <div class="shape-button shape-triangle" data-shape="triangle" draggable="true">T</div>
+
+          <!-- Additional Shapes -->
+          <div id="additionalShapes" style="display: none;">
+            <div class="shape-button shape-equilateral" data-shape="equilateral" draggable="true">E</div>
+            <div class="shape-button shape-isosceles" data-shape="isosceles" draggable="true">I</div>
+            <div class="shape-button shape-hexagon" data-shape="hexagon" draggable="true">H</div>
+            <div class="shape-button shape-pentagon" data-shape="pentagon" draggable="true">P</div>
+            <div class="shape-button shape-oval" data-shape="oval" draggable="true">O</div>
+          </div>
+
+          <!-- Show More Button -->
+          <span id="showMoreShapes">Pilih Shape Lainnya</span>
+        </div>
+
+
+        <button id="saveBtn">Simpan Gambar</button>
+    </aside>
+
+    <main class="main-content">
+      <h2>Pratinjau Template</h2>
+      <button class="btn btn-primary" id="copy">copy</button>
+      <button class="btn btn-success" id="paste">paste</button>
+      <button class="btn btn-danger" id="cut">cut</button>
+      <button class="btn btn-info" id="undo">undo</button>
+      <button class="btn btn-warning" id="redo">redo</button>
+      <button class="btn btn-secondary" id="naikan">Naikan</button>
+      <button class="btn btn-black" id="turunkan">turunkan</button>
+      <canvas id="editorCanvas" width="800" height="600" style="border: 1px solid #ccc"></canvas>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
+      <script>
+        // Inisialisasi canvas
+        const canvas = new fabric.Canvas("editorCanvas");
+        let zoomLevel = 1; // Tingkat zoom awal (1 = normal)
+        let clipboard = []; // Array untuk menyimpan objek yang disalin
+        let history = []; // Menyimpan riwayat canvas
+        let redoHistory = []; // Menyimpan riwayat yang telah di-undo untuk redo
+        let currentHistoryIndex = -1; // Menunjukkan indeks riwayat saat ini
+
+        const textInput = document.getElementById('textInput');
+        const addTextBtn = document.getElementById('addTextBtn');
+        const textColor = document.getElementById('textColor');
+        const textSize = document.getElementById('textSize');
+        const textSizeValue = document.getElementById('textSizeValue');
+
+        // Fungsi untuk menambahkan teks ke canvas
+        addTextBtn.addEventListener('click', () => {
+          const text = new fabric.IText(textInput.value || 'Teks Baru', {
+            left: 100,
+            top: 100,
+            fontSize: 30,
+            fill: '#000000',
+          });
+          canvas.add(text);
+          canvas.setActiveObject(text);  // Membuat teks yang baru ditambahkan aktif untuk diedit
+          textInput.value = '';  // Reset input teks setelah menambahkan
+        });
+
+        // Fungsi untuk mengubah warna teks
+        textColor.addEventListener('input', () => {
+          const activeObject = canvas.getActiveObject();
+          if (activeObject && activeObject.type === 'i-text') {
+            activeObject.set({ fill: textColor.value });
+            canvas.renderAll();
+          }
+        });
+
+        // Fungsi untuk mengubah ukuran font teks
+        textSize.addEventListener('input', () => {
+          const activeObject = canvas.getActiveObject();
+          textSizeValue.textContent = textSize.value; // Update ukuran di UI
+          if (activeObject && activeObject.type === 'i-text') {
+            activeObject.set({ fontSize: parseInt(textSize.value, 10) });
+            canvas.renderAll();
+          }
+        });
+
+        // Event untuk mendeteksi double-click pada teks
+        canvas.on('mouse:dblclick', (event) => {
+          const target = event.target;
+          if (target && target.type === 'i-text') {
+            target.enterEditing(); // Memasuki mode editing
+            target.selectAll(); // Memilih semua teks untuk mempermudah pengeditan
+          }
+        });
+
+        // Event listener untuk memperbarui kontrol teks saat teks dipilih
+        canvas.on('selection:updated', updateTextInputs);
+        canvas.on('selection:created', updateTextInputs);
+
+        // Fungsi untuk sinkronisasi kontrol dengan teks yang dipilih
+        function updateTextInputs() {
+          const activeObject = canvas.getActiveObject();
+          if (activeObject && activeObject.type === 'i-text') {
+            textColor.value = activeObject.fill || '#000000';
+            textSize.value = activeObject.fontSize || 30;
+            textSizeValue.textContent = textSize.value;
+          }
+        }
+
+        // Event untuk menghapus kontrol jika tidak ada objek yang dipilih
+        canvas.on('selection:cleared', () => {
+          textColor.value = '#000000';
+          textSize.value = 30;
+          textSizeValue.textContent = 30;
+        });
+
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Fungsi untuk menyimpan seluruh gambar dari canvas
+        saveBtn.addEventListener('click', () => {
+          const dataURL = canvas.toDataURL({ format: 'png' }); // Mengonversi canvas ke PNG
+          const link = document.createElement('a');
+          link.href = dataURL;
+          link.download = 'canvas-image.png'; // Nama file yang akan diunduh
+          link.click(); // Memulai proses download
+        });
+
+        const imageInput = document.getElementById("imageInput");
+        const deleteImageButton = document.getElementById("deleteImage");
+        const imageWidth = document.getElementById("imageWidth");
+        const imageHeight = document.getElementById("imageHeight");
+        const imageWidthValue = document.getElementById("imageWidthValue");
+        const imageHeightValue = document.getElementById("imageHeightValue");
+
+        // Event Listener untuk scroll pada kanvas
+        canvas.on('mouse:wheel', (event) => {
+          if (event.e.ctrlKey) { // Pastikan Ctrl ditekan
+            const delta = event.e.deltaY; // Arah scroll
+            let zoomChange = delta < 0 ? 0.1 : -0.1; // Tentukan perubahan zoom (+ untuk zoom in, - untuk zoom out)
+
+            if (zoomLevel + zoomChange >= 0.1 && zoomLevel + zoomChange <= 3) { // Batas zoom antara 0.1 dan 3
+              zoomLevel += zoomChange;
+            }
+
+            // Ambil posisi pointer pada kanvas
+            const pointer = canvas.getPointer(event.e); // Menentukan posisi kursor pada kanvas
+
+            // Hitung pergeseran posisi kanvas yang diperlukan untuk zoom di titik kursor
+            const zoomPointX = pointer.x;
+            const zoomPointY = pointer.y;
+
+            // Tentukan transformasi yang diperlukan untuk menjaga zoom pada titik tersebut
+            const scaleX = zoomPointX * (zoomLevel / canvas.getZoom());
+            const scaleY = zoomPointY * (zoomLevel / canvas.getZoom());
+
+            // Set zoom dan sesuaikan posisi tampilan
+            canvas.setZoom(zoomLevel);
+
+            // Mengatur viewportTransform untuk menjaga posisi kursor pada titik yang sama setelah zoom
+            const deltaX = scaleX - zoomPointX;
+            const deltaY = scaleY - zoomPointY;
+            canvas.setViewportTransform([zoomLevel, 0, 0, zoomLevel, canvas.viewportTransform[4] - deltaX, canvas.viewportTransform[5] - deltaY]);
+
+            canvas.renderAll(); // Render ulang kanvas
+            console.log(`Zoom Level: ${zoomLevel}`);
+
+            // Mencegah scroll halaman
+            event.e.preventDefault();
+            event.e.stopPropagation();
+          }
+        });
+
+        // Event Listener untuk Ctrl + Panah Atas/Bawah
+        document.addEventListener("keydown", (event) => {
+          if (event.ctrlKey) {
+            if (event.key === "ArrowUp") {
+              // Ctrl + Panah Atas: Zoom In
+              if (zoomLevel < 3) { // Batas maksimal zoom
+                zoomLevel += 0.1;
+                canvas.setZoom(zoomLevel);
+                canvas.renderAll();
+                console.log(`Zoom In: ${zoomLevel}`);
+              }
+            } else if (event.key === "ArrowDown") {
+              // Ctrl + Panah Bawah: Zoom Out
+              if (zoomLevel > 0.1) { // Batas minimal zoom
+                zoomLevel -= 0.1;
+                canvas.setZoom(zoomLevel);
+                canvas.renderAll();
+                console.log(`Zoom Out: ${zoomLevel}`);
+              } else {
+                console.log("Cannot zoom out further.");
+              }
+            }
+          }
+        });
+
+        imageInput.addEventListener("change", (event) => {
+          const file = event.target.files[0];
+
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              fabric.Image.fromURL(e.target.result, (img) => {
+                img.set({
+                  left: 100,
+                  top: 100,
+                  selectable: true,
+                });
+                canvas.add(img);
+                canvas.setActiveObject(img);
+                canvas.renderAll();
+
+                // Set default slider values based on image size
+                imageWidth.value = img.getScaledWidth();
+                imageHeight.value = img.getScaledHeight();
+                imageWidthValue.textContent = img.getScaledWidth();
+                imageHeightValue.textContent = img.getScaledHeight();
+              });
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        deleteImageButton.addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+
+          if (selectedObject && selectedObject.type === "image") {
+            canvas.remove(selectedObject);
+            canvas.renderAll();
+          } else {
+            alert("Pilih gambar untuk dihapus.");
+          }
+        });
+
+        imageWidth.addEventListener("input", () => {
+          const selectedObject = canvas.getActiveObject();
+
+          if (selectedObject && selectedObject.type === "image") {
+            const newWidth = parseInt(imageWidth.value, 10);
+            selectedObject.scaleToWidth(newWidth);
+            canvas.renderAll();
+            imageWidthValue.textContent = newWidth;
+          } else {
+            alert("Pilih gambar untuk mengatur ukuran.");
+          }
+        });
+
+        imageHeight.addEventListener("input", () => {
+          const selectedObject = canvas.getActiveObject();
+
+          if (selectedObject && selectedObject.type === "image") {
+            const newHeight = parseInt(imageHeight.value, 10);
+            selectedObject.scaleToHeight(newHeight);
+            canvas.renderAll();
+            imageHeightValue.textContent = newHeight;
+          } else {
+            alert("Pilih gambar untuk mengatur ukuran.");
+          }
+        });
+
+        // Mendapatkan elemen input
+        const borderActive = document.getElementById("borderActive");
+        const borderColor = document.getElementById("borderColor");
+        const borderSize = document.getElementById("borderSize");
+        const borderSizeValue = document.getElementById("borderSizeValue");
+
+        // Event untuk mengaktifkan atau menonaktifkan border
+        borderActive.addEventListener("change", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            if (borderActive.checked) {
+              selectedObject.set({
+                stroke: borderColor.value,
+                strokeWidth: parseInt(borderSize.value, 10),
+              });
+            } else {
+              selectedObject.set({
+                stroke: null, // Nonaktifkan border
+                strokeWidth: 0,
+              });
+            }
+            canvas.renderAll(); // Render ulang canvas
+          } else {
+            alert("Pilih sebuah shape terlebih dahulu.");
+          }
+        });
+
+        // Event untuk mengubah warna border
+        borderColor.addEventListener("input", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject && borderActive.checked) {
+            selectedObject.set({
+              stroke: borderColor.value,
+            });
+            canvas.renderAll();
+          }
+        });
+
+        // Event untuk mengubah ukuran border
+        borderSize.addEventListener("input", () => {
+          const selectedObject = canvas.getActiveObject();
+          borderSizeValue.textContent = borderSize.value; // Update nilai ukuran di UI
+          if (selectedObject && borderActive.checked) {
+            selectedObject.set({
+              strokeWidth: parseInt(borderSize.value, 10),
+            });
+            canvas.renderAll();
+          }
+        });
+
+
+        // Event untuk mendeteksi perubahan objek yang aktif di canvas
+        canvas.on("selection:updated", updateBorderInputs);
+        canvas.on("selection:created", updateBorderInputs);
+
+        // Fungsi untuk sinkronisasi input dengan objek yang dipilih
+        function updateBorderInputs() {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            borderActive.checked = !!selectedObject.stroke; // Periksa apakah border aktif
+            borderColor.value = selectedObject.stroke || "#000000";
+            borderSize.value = selectedObject.strokeWidth || 0;
+            borderSizeValue.textContent = borderSize.value;
+          }
+        }
+
+        // Mendapatkan elemen input transparansi dan kontrol border
+        const opacitySlider = document.getElementById('opacitySlider');
+        const opacityValue = document.getElementById('opacityValue');
+
+        // Event untuk mengubah transparansi objek
+        opacitySlider.addEventListener('input', function () {
+          const opacity = opacitySlider.value / 100; // Mengubah nilai slider (0-100) menjadi nilai (0-1)
+          opacityValue.textContent = opacitySlider.value; // Menampilkan nilai transparansi pada UI
+
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            selectedObject.set({
+              opacity: opacity // Mengubah transparansi objek menggunakan properti opacity
+            });
+            canvas.renderAll(); // Render ulang kanvas
+          } else {
+            console.log('Tidak ada objek yang dipilih.');
+          }
+        });
+
+        // logika tombol kopy
+        document.getElementById("copy").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            clipboard = selectedObject.clone((cloned) => {
+              cloned.set({
+                left: cloned.left + 10,
+                top: cloned.top + 10,
+              });
+
+              clipboards = cloned;
+              console.log("Object copied:", clipboards);
+            });
+          } else {
+            console.log("No object selected for copy.");
+          }
+        });
+
+        // logika tombol paste
+        document.getElementById("paste").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (clipboards) {
+            clipboards.clone((cloned) => {
+              cloned.set({
+                left: cloned.left + 10,
+                top: cloned.top + 10,
+              });
+
+              canvas.add(cloned);
+              canvas.setActiveObject(cloned);
+              canvas.renderAll();
+
+              console.log("Object pasted:", cloned);
+              saveHistory(); // Simpan perubahan setelah paste
+            });
+          } else {
+            console.log("No object to paste.");
+            alert("Tidak ada objek yang disalin untuk dipaste.");
+          }
+        });
+
+        // logika tombol cut
+        document.getElementById("cut").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            clipboard = selectedObject.clone((cloned) => {
+              cloned.set({
+                left: cloned.left + 10,
+                top: cloned.top + 10,
+              });
+
+              clipboards = cloned;
+              console.log("Object copied:", clipboards);
+            });
+            canvas.remove(selectedObject);
+            console.log("Object cut:", selectedObject);
+            saveHistory(); // Simpan perubahan setelah cut
+          } else {
+            console.log("No object selected for cut.");
+          }
+        });
+
+        // logika tombol undo
+        document.getElementById("undo").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (currentHistoryIndex > 0) {
+            // Simpan status canvas sebelum melakukan undo untuk redo
+            saveRedoHistory();
+
+            currentHistoryIndex--;
+            canvas.loadFromJSON(
+              history[currentHistoryIndex],
+              canvas.renderAll.bind(canvas)
+            );
+            console.log("Undo: Reverted to previous state");
+          } else {
+            console.log("No more history to undo.");
+          }
+        });
+
+        // logika tombol redo
+        document.getElementById("redo").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (redoHistory.length > 0) {
+            const redoState = redoHistory.pop();
+            currentHistoryIndex++;
+            canvas.loadFromJSON(redoState, canvas.renderAll.bind(canvas));
+            console.log("Redo: Reverted to next state");
+          } else {
+            console.log("No more history to redo.");
+          }
+        });
+
+        // logika tombol naikan sheep ke lapisan paling atas canvas
+        document.getElementById("naikan").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            selectedObject.bringToFront(); // Memindahkan objek terpilih ke lapisan teratas
+            canvas.renderAll(); // Merender ulang canvas agar perubahan terlihat
+            console.log("Object brought to front:", selectedObject);
+          } else {
+            console.log("No object selected to bring to front.");
+            alert("Pilih objek yang ingin dinaikkan ke atas!");
+          }
+        });
+
+        // logika tombol turunkan sheep ke lapisan paling bawah canvas
+        document.getElementById("turunkan").addEventListener("click", () => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            selectedObject.sendToBack(); // Memindahkan objek terpilih ke lapisan terbawah
+            canvas.renderAll(); // Merender ulang canvas agar perubahan terlihat
+            console.log("Object sent to back:", selectedObject);
+          } else {
+          }
+        });
+
+        document.addEventListener("keydown", (event) => {
+          const selectedObject = canvas.getActiveObject();
+
+          if (event.ctrlKey && event.key === "c") {
+            // Ctrl+C: Copy
+            const activeObjects = canvas.getActiveObjects();
+
+            if (activeObjects.length > 0) {
+              clipboard = [];
+              activeObjects.forEach((obj) => {
+                obj.clone((cloned) => {
+                  cloned.set({
+                    left: obj.left + 10,
+                    top: obj.top + 10,
+                  });
+                  clipboard.push(cloned);
+                });
+              });
+
+              console.log("Objects copied:", clipboard);
+            } else {
+              console.log("No objects selected for copy.");
+            }
+          } else if (event.ctrlKey && event.key === "v") {
+            // Ctrl+V: Paste
+            if (clipboard.length > 0) {
+              clipboard.forEach((cloned) => {
+                cloned.clone((newClone) => {
+                  newClone.set({
+                    left: newClone.left + 10, // Geser posisi sedikit
+                    top: newClone.top + 10,
+                  });
+
+                  canvas.add(newClone);
+                  canvas.setActiveObject(newClone);
+                });
+              });
+
+              canvas.renderAll();
+              console.log("Objects pasted:", clipboard);
+              saveHistory(); // Simpan perubahan setelah paste
+            } else {
+              console.log("No objects to paste.");
+            }
+          } else if (event.ctrlKey && event.key === "x") {
+            // Ctrl+X: Cut
+            const activeObjects = canvas.getActiveObjects();
+
+            if (activeObjects.length > 0) {
+              clipboard = [];
+              activeObjects.forEach((obj) => {
+                obj.clone((cloned) => {
+                  cloned.set({
+                    left: obj.left + 10,
+                    top: obj.top + 10,
+                  });
+                  clipboard.push(cloned);
+                });
+
+                canvas.remove(obj); // Hapus objek dari canvas
+              });
+
+              canvas.discardActiveObject(); // Hilangkan seleksi aktif
+              canvas.renderAll();
+
+              console.log("Objects cut:", clipboard);
+              saveHistory(); // Simpan perubahan setelah cut
+            } else {
+              console.log("No objects selected for cut.");
+            }
+          } else if (event.key === "Delete") {
+            // Delete: Hapus
+            const activeObjects = canvas.getActiveObjects(); // Mendapatkan semua objek yang dipilih
+            if (activeObjects.length > 0) {
+              activeObjects.forEach((object) => {
+                canvas.remove(object); // Hapus semua objek yang dipilih
+              });
+              canvas.discardActiveObject(); // Hilangkan seleksi
+              canvas.renderAll();
+              saveHistory(); // Simpan perubahan setelah menghapus
+              console.log(`${activeObjects.length} object(s) deleted.`);
+            } else {
+              console.log("No objects selected for deletion.");
+            }
+          } else if (event.ctrlKey && event.key === "z") {
+            // Ctrl+Z: Undo
+            if (currentHistoryIndex > 0) {
+              redoHistory.push(history[currentHistoryIndex]); // Simpan untuk redo
+              currentHistoryIndex--;
+
+              const previousState = history[currentHistoryIndex];
+              canvas.loadFromJSON(previousState, () => {
+                canvas.renderAll();
+                console.log("Undo: Reverted to state at index", currentHistoryIndex);
+              });
+            } else {
+              console.log("No more history to undo.");
+            }
+          } else if (event.ctrlKey && event.key === "y") {
+            // Ctrl+Y: Redo
+            if (redoHistory.length > 0) {
+              const redoState = redoHistory.pop();
+              history.push(redoState); // Tambahkan kembali ke history
+              currentHistoryIndex++;
+
+              canvas.loadFromJSON(redoState, () => {
+                canvas.renderAll();
+                console.log("Redo: Reverted to state at index", currentHistoryIndex);
+              });
+            } else {
+              console.log("No more history to redo.");
+            }
+          } else if (event.key === "ArrowUp") {
+            // Panah atas
+            selectedObject.top -= 10;
+          } else if (event.key === "ArrowDown") {
+            // Panah bawah
+            selectedObject.top += 10;
+          } else if (event.key === "ArrowLeft") {
+            // Panah kiri
+            selectedObject.left -= 10;
+          } else if (event.key === "ArrowRight") {
+            // Panah kanan
+            selectedObject.left += 10;
+          }
+
+          // Setelah setiap perubahan, update canvas
+          canvas.renderAll();
+
+        });
+
+        /*************  ✨ Codeium Command ⭐  *************/
+        /**
+         * Simpan riwayat canvas sebelumnya. Jika ada perubahan setelah posisi
+         * saat ini, maka perubahan-perubahan itu akan dihapus.
+         * 
+         * @return {void}
+         */
+
+        /******  18646b9d-867a-4ffb-8eaa-71810f4cab79  *******/
+        function saveHistory() {
+          if (currentHistoryIndex < history.length - 1) {
+            // Hapus riwayat setelah posisi saat ini
+            history = history.slice(0, currentHistoryIndex + 1);
+          }
+
+          // Simpan seluruh keadaan canvas dalam JSON
+          const currentState = JSON.stringify(canvas.toJSON());
+          history.push(currentState);
+          currentHistoryIndex++;
+
+          console.log("History saved. Current index:", currentHistoryIndex);
+        }
+
+
+        // Fungsi untuk menyimpan status canvas ke dalam redoHistory
+        function saveRedoHistory() {
+          // Simpan salinan canvas untuk redo setelah undo
+          if (currentHistoryIndex >= 0) {
+            redoHistory.push(canvas.toJSON());
+          }
+        }
+
+        canvas.on("object:modified", () => saveHistory());
+        canvas.on("object:added", () => saveHistory());
+        canvas.on("object:removed", () => saveHistory());
+
+        canvas.loadFromJSON(history[currentHistoryIndex], () => {
+          canvas.renderAll();
+          console.log("Canvas state loaded successfully at index", currentHistoryIndex);
+        });
+
+        canvas.on('selection:created', (e) => {
+          console.log('Objects selected:', e.selected);
+        });
+
+        canvas.on('selection:updated', (e) => {
+          console.log('Objects reselected:', e.selected);
+        });
+
+        canvas.on('selection:cleared', () => {
+          console.log('Selection cleared');
+        });
+
+
+        // Ambil elemen input warna
+        const elementColorInput = document.getElementById("elementColor");
+
+        // Event listener untuk mengubah warna elemen yang dipilih
+        elementColorInput.addEventListener("input", (event) => {
+          const selectedObject = canvas.getActiveObject();
+          if (selectedObject) {
+            selectedObject.set("fill", event.target.value);
+            canvas.renderAll();
+          }
+        });
+
+        // Opsional: Ganti warna latar belakang canvas
+        const backgroundColorInput =
+          document.getElementById("backgroundColor");
+        backgroundColorInput.addEventListener("input", (event) => {
+          canvas.setBackgroundColor(
+            event.target.value,
+            canvas.renderAll.bind(canvas)
+          );
+        });
+
+        // Ambil input slider untuk ukuran shape
+        const sizeSlider = document.getElementById("shapeSize");
+        const sizeValueDisplay = document.getElementById("sizeValue");
+
+        // Tampilkan nilai ukuran yang dipilih
+        sizeSlider.addEventListener("input", () => {
+          sizeValueDisplay.textContent = sizeSlider.value;
+        });
+
+        // Fungsi untuk mengubah ukuran latar belakang canvas berdasarkan rasio yang dipilih
+        const aspectRatioSelect = document.getElementById("aspectRatio");
+        aspectRatioSelect.addEventListener("change", (event) => {
+          const aspectRatio = event.target.value;
+          let newWidth = 800; // Default width
+          let newHeight = 600; // Default height
+
+          if (aspectRatio === "16:9") {
+            newHeight = (newWidth * 9) / 16;
+          } else if (aspectRatio === "9:16") {
+            newHeight = (newWidth * 16) / 9;
+          } else if (aspectRatio === "4:5") {
+            newHeight = (newWidth * 5) / 4;
+          } else if (aspectRatio === "1:1") {
+            newHeight = newWidth;
+          } else if (aspectRatio === "4:3") {
+            newHeight = (newWidth * 3) / 4;
+          }
+
+          canvas.setWidth(newWidth);
+          canvas.setHeight(newHeight);
+        });
+
+        // Event listener untuk tombol-tombol shape
+        const shapeOptions = document.getElementById("shapeOptions");
+        shapeOptions.addEventListener("click", (event) => {
+          const shapeType = event.target.getAttribute("data-shape");
+          const shapeSize = 100; // Ukuran shape default
+          if (shapeType) {
+            addShapeToCanvas(shapeType, shapeSize, 100, 100); // Tambahkan shape ke posisi default
+          }
+        });
+
+        // Event drag-and-drop
+        shapeOptions.addEventListener("dragstart", (event) => {
+          const shapeType = event.target.getAttribute("data-shape");
+          event.dataTransfer.setData("shapeType", shapeType);
+        });
+
+        canvas.wrapperEl.addEventListener("dragover", (event) => {
+          event.preventDefault(); // Izinkan drop
+        });
+
+        canvas.wrapperEl.addEventListener("drop", (event) => {
+          event.preventDefault();
+          const shapeType = event.dataTransfer.getData("shapeType");
+          if (shapeType) {
+            const rect = canvas.wrapperEl.getBoundingClientRect();
+            const dropX = event.clientX - rect.left;
+            const dropY = event.clientY - rect.top;
+            addShapeToCanvas(shapeType, 100, dropX, dropY); // Tambahkan shape ke posisi drop
+          }
+        });
+
+        // Fungsi untuk menambahkan shape ke canvas
+        function addShapeToCanvas(shapeType, shapeSize, left, top) {
+          let newShape;
+          if (shapeType === "circle") {
+            newShape = new fabric.Circle({
+              radius: shapeSize / 2,
+              fill: "red",
+              left,
+              top,
+            });
+          } else if (shapeType === "rectangle") {
+            newShape = new fabric.Rect({
+              width: shapeSize,
+              height: shapeSize / 2,
+              fill: "blue",
+              left,
+              top,
+            });
+          } else if (shapeType === "triangle") {
+            newShape = new fabric.Triangle({
+              width: shapeSize,
+              height: shapeSize,
+              fill: "green",
+              left,
+              top,
+            });
+          } else if (shapeType === "equilateral") {
+            newShape = new fabric.Polygon(
+              [
+                { x: 0, y: shapeSize },
+                { x: shapeSize / 2, y: 0 },
+                { x: shapeSize, y: shapeSize },
+              ],
+              {
+                fill: "pink",
+                left,
+                top,
+              }
+            );
+          } else if (shapeType === "isosceles") {
+            newShape = new fabric.Polygon(
+              [
+                { x: 0, y: shapeSize },
+                { x: shapeSize / 2, y: 0 },
+                { x: shapeSize, y: shapeSize },
+              ],
+              {
+                fill: "yellow",
+                left,
+                top,
+              }
+            );
+          } else if (shapeType === "hexagon") {
+            newShape = new fabric.Polygon(
+              [
+                { x: shapeSize / 2, y: 0 },
+                { x: shapeSize, y: shapeSize / 4 },
+                { x: shapeSize, y: (shapeSize * 3) / 4 },
+                { x: shapeSize / 2, y: shapeSize },
+                { x: 0, y: (shapeSize * 3) / 4 },
+                { x: 0, y: shapeSize / 4 },
+              ],
+              {
+                fill: "cyan",
+                left,
+                top,
+              }
+            );
+          } else if (shapeType === "pentagon") {
+            newShape = new fabric.Polygon(
+              [
+                { x: shapeSize / 2, y: 0 },
+                { x: shapeSize, y: shapeSize / 4 },
+                { x: (shapeSize * 3) / 4, y: shapeSize },
+                { x: shapeSize / 4, y: shapeSize },
+                { x: 0, y: shapeSize / 4 },
+              ],
+              {
+                fill: "magenta",
+                left,
+                top,
+              }
+            );
+          } else if (shapeType === "oval") {
+            newShape = new fabric.Ellipse({
+              rx: shapeSize / 2,
+              ry: shapeSize / 4,
+              fill: "orange",
+              left,
+              top,
+            });
+          }
+          canvas.add(newShape);
+        }
+
+        // Menampilkan shapes tambahan ketika tombol "Pilih Shape Lainnya" diklik
+        const showMoreShapesButton = document.getElementById("showMoreShapes");
+        const additionalShapes = document.getElementById("additionalShapes");
+
+        showMoreShapesButton.addEventListener("click", () => {
+          additionalShapes.style.display = "block";
+          showMoreShapesButton.style.display = "none";
+        });
+      </script>
+    </main>
+  </div>
+</body>
+
+</html>
